@@ -108,12 +108,11 @@ run:
       cd: $home
       hook: code
       cmd:
+        - git remote show origin
         - git reset --hard
         - git clean -f
         - git remote set-branches --add origin master
         - git pull
-        - git fetch origin $version
-        - git checkout $version
         - mkdir -p tmp/pids
         - mkdir -p tmp/sockets
         - touch tmp/.gitkeep
