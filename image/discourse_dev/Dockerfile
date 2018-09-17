@@ -1,6 +1,6 @@
 # NAME:     discourse/discourse_dev
 # VERSION:  release
-FROM ethanc1/discourse-docker
+FROM ethanc1/discourse
 
 #LABEL maintainer="Sam Saffron \"https://twitter.com/samsaffron\""
 

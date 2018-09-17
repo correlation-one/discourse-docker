@@ -1,17 +1,12 @@
 ### About
 
-- [Docker](https://docker.com/) is an open source project to pack, ship and run any Linux application in a lighter weight, faster container than a traditional virtual machine.
-
-- Docker makes it much easier to deploy [a Discourse forum](https://github.com/discourse/discourse) on your servers and keep it updated. For background, see [Sam's blog post](http://samsaffron.com/archive/2013/11/07/discourse-in-a-docker-container).
-
-- The templates and base image configure Discourse with the Discourse team's recommended optimal defaults.
+This is the repo to deploy the docker image of the C1 Quanta Forum. Source code for the forum is at github.com/correlation-one/discourse. 
 
 ### Getting Started
 
-The simplest way to get started is via the **standalone** template, which can be installed in 30 minutes or less. For detailed install instructions, see
+After making changes to the forum code, the docker image has to be built from the discourse repo. Follow instructions in the repo. Once the docker image is created, ensure that it is tagged with the image name specified in `launcher`, `image/auto_build.rb` and `image/discourse_dev/Dockerfile` and that it has the `latest` tag attached to it. Run `./launcher rebuild app` from the root of this repo. If deploying on a new machine, extract the `containers/app.yml` from a snapshot or existing instance and place it in `containers`. Ensure that the ssl bundle for the site (contains all intermediary certs) is located in `/var/discourse/shared/standalone/ssl/ssl.crt` and the ssl private key is at `/var/discourse/shared/standalone/ssl/ssl.key`.
 
-https://github.com/discourse/discourse/blob/master/docs/INSTALL-cloud.md
-
+Create brand new configurations with ./discourse-setup. It is currently hosted on Google Cloud and requires a load balancer with named port "https". 
 ### Directory Structure
 
 #### `/cids`

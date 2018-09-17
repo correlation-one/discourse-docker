@@ -9,7 +9,8 @@ run:
      to: |
        server {
          listen 80;
-         return 301 https://$$ENV_DISCOURSE_HOSTNAME$request_uri;
+
+           return 301 https://$$ENV_DISCOURSE_HOSTNAME$request_uri;
        }
        server {
   - replace:
@@ -34,9 +35,6 @@ run:
 
        add_header Strict-Transport-Security 'max-age=31536000'; # remember the certificate for a year and automatically connect to HTTPS for this domain
 
-       if ($http_host != $$ENV_DISCOURSE_HOSTNAME) {
-          rewrite (.*) https://$$ENV_DISCOURSE_HOSTNAME$1 permanent;
-       }
   - replace:
      filename: "/etc/nginx/conf.d/discourse.conf"
      from: /add_header Referrer-Policy 'no-referrer-when-downgrade';/m
