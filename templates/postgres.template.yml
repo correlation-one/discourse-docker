@@ -36,7 +36,7 @@ run:
      contents: |
         #!/bin/sh
         exec 2>&1
-        HOME=/var/lib/postgresql USER=postgres exec chpst -u postgres:postgres:ssl-cert -U postgres:postgres:ssl-cert /usr/lib/postgresql/10/bin/postmaster -D /etc/postgresql/10/main
+        HOME=/var/lib/postgresql USER=postgres exec thpoff chpst -u postgres:postgres:ssl-cert -U postgres:postgres:ssl-cert /usr/lib/postgresql/10/bin/postmaster -D /etc/postgresql/10/main
 
   - file:
      path: /etc/service/postgres/log/run
@@ -62,7 +62,7 @@ run:
 
        if [ ! "10" = "$PG_MAJOR_OLD" ]; then
          echo Upgrading PostgreSQL from version ${PG_MAJOR_OLD} to 10
-         free_disk=$(df /var | tail -n 1 | awk '{print $4}')
+         free_disk=$(df /shared | tail -n 1 | awk '{print $4}')
          required=$(($(du -s /shared/postgres_data | awk '{print $1}') * 2))
 
          if [ "$free_disk" -lt "$required" ]; then
