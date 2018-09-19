@@ -32,7 +32,8 @@ RUN apt-get -y install build-essential git wget \
                        postgresql-${PG_MAJOR} postgresql-client-${PG_MAJOR} \
                        postgresql-contrib-${PG_MAJOR} libpq-dev libreadline-dev \
                        language-pack-en cron anacron \
-                       psmisc rsyslog vim whois brotli libunwind-dev
+                       psmisc rsyslog vim whois brotli libunwind-dev \
+                       libtcmalloc-minimal4
 RUN sed -i -e 's/start -q anacron/anacron -s/' /etc/cron.d/anacron
 RUN sed -i.bak 's/$ModLoad imklog/#$ModLoad imklog/' /etc/rsyslog.conf
 RUN dpkg-divert --local --rename --add /sbin/initctl
@@ -46,7 +47,7 @@ RUN cd / &&\
     locale-gen en_US &&\
     apt-get install -y nodejs &&\
     npm install -g uglify-js@"<3" &&\
-    npm install svgo -g
+    npm install -g svgo
 
 ADD install-nginx /tmp/install-nginx
 RUN /tmp/install-nginx
@@ -59,20 +60,20 @@ RUN mkdir /jemalloc-stable && cd /jemalloc-stable &&\
       cd / && rm -rf /jemalloc-stable
 
 RUN mkdir /jemalloc-new && cd /jemalloc-new &&\
-      wget https://github.com/jemalloc/jemalloc/releases/download/5.0.1/jemalloc-5.0.1.tar.bz2 &&\
-      tar -xjf jemalloc-5.0.1.tar.bz2 && cd jemalloc-5.0.1 && ./configure --prefix=/usr --with-install-suffix=5.0.1 && make build_lib && make install_lib &&\
+      wget https://github.com/jemalloc/jemalloc/releases/download/5.1.0/jemalloc-5.1.0.tar.bz2 &&\
+      tar -xjf jemalloc-5.1.0.tar.bz2 && cd jemalloc-5.1.0 && ./configure --prefix=/usr --with-install-suffix=5.1.0 && make build_lib && make install_lib &&\
       cd / && rm -rf /jemalloc-new
 
 RUN echo 'gem: --no-document' >> /usr/local/etc/gemrc &&\
     mkdir /src && cd /src && git clone https://github.com/sstephenson/ruby-build.git &&\
     cd /src/ruby-build && ./install.sh &&\
-    cd / && rm -rf /src/ruby-build && (ruby-build 2.4.4 /usr/local)
+    cd / && rm -rf /src/ruby-build && (ruby-build 2.5.1 /usr/local)
 
 RUN gem update --system
 
 RUN gem install bundler --force &&\
-    rm -rf /usr/local/share/ri/2.4.4/system &&\
-    cd / && git clone https://github.com/SamSaffron/pups.git
+    rm -rf /usr/local/share/ri/2.5.1/system &&\
+    cd / && git clone https://github.com/discourse/pups.git
 
 ADD install-imagemagick /tmp/install-imagemagick
 RUN /tmp/install-imagemagick
@@ -88,6 +89,12 @@ RUN /tmp/install-gifsicle
 
 ADD install-pngquant /tmp/install-pngquant
 RUN /tmp/install-pngquant
+
+# This tool allows us to disable huge page support for our current process
+# since the flag is preserved through forks and execs it can be used on any
+# process
+ADD thpoff.c /src/thpoff.c
+RUN gcc -o /usr/local/sbin/thpoff /src/thpoff.c && rm /src/thpoff.c
 
 # clean up for docker squash
 RUN   rm -fr /usr/share/man &&\
