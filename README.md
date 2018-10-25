@@ -4,7 +4,7 @@ This is the repo to deploy the docker image of the C1 Quanta Forum. Source code 
 
 ### Getting Started
 
-After making changes to the forum code, the docker image has to be built from the discourse repo. Follow instructions in the repo. Once the docker image is created, ensure that it is tagged with the image name specified in `launcher`, `image/auto_build.rb` and `image/discourse_dev/Dockerfile` and that it has the `latest` tag attached to it. Run `./launcher rebuild app` from the root of this repo. If deploying on a new machine, extract the `containers/app.yml` from a snapshot or existing instance and place it in `containers`. Ensure that the ssl bundle for the site (contains all intermediary certs) is located in `/var/discourse/shared/standalone/ssl/ssl.crt` and the ssl private key is at `/var/discourse/shared/standalone/ssl/ssl.key`.
+After making changes to the forum code, push the code to the correlation-one/discourse repo. Create a docker image from the code changes by running `cd images/` and `ruby auto_build.rb base`, making sure the repository specified in `image/base/Dockerfile` is correct. Run `./launcher rebuild app` from the root of this repo. If deploying on a new machine, extract the `containers/app.yml` from a snapshot or existing instance and place it in `containers`. Ensure that the ssl bundle for the site (contains all intermediary certs) is located in `/var/discourse/shared/standalone/ssl/ssl.crt` and the ssl private key is at `/var/discourse/shared/standalone/ssl/ssl.key`.
 
 Create brand new configurations with ./discourse-setup. It is currently hosted on Google Cloud and requires a load balancer with named port "https". 
 ### Directory Structure
